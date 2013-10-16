@@ -34,7 +34,17 @@ class GTTMifareUL:
         for data in self.buffer:
             newdata += data
         self.mem_raw.append(newdata)
-
+    def reverseLOCK(self):
+        y = 0
+        l0 = ''
+        l1 = ''
+        otpbits = self.printBlock('LOCK',16)
+        for x in range(7,-1,-1):
+            l0 = otpbits[y:y+1] + l0
+            l1 = otpbits[y+8:y+9] + l1
+            y += 1
+        print l0,l1
+        return (l0,l1)
     def printMemData(self):
         for index in self.myindex:
             print index+' '+self.mem_data[index]
@@ -51,7 +61,8 @@ class GTTMifareUL:
                     writed = 0
                 out += '%s' % (int(self.mem_data[blockname][x:x+2],16) >> y & 1)
                 writed += 1
-        print out
+        #print out
+        return out
     def analyzeData(self,blockname):
         out = ''
         w = 0
@@ -61,7 +72,8 @@ class GTTMifareUL:
                 w = 0
             out += '%02x' % (int(self.mem_data[blockname][x:x+2],16))
             w += 2
-        print out
+        #print out
+        return out
     def writeBlock(self,operation,data):
         #self.card.writeblock(block,data)
         #print self.card.ToBinaryString(self.card.ToBinary('c0'))
@@ -73,8 +85,8 @@ class GTTMifareUL:
 
 mygtt = GTTMifareUL()
 mygtt.printMemData()
-mygtt.printBlock('DATA',8)
-mygtt.analyzeData('DATA')
+print mygtt.printBlock('LOCK',8)
+#mygtt.analyzeData('DATA')
 print mygtt.mem_raw
-
+mygtt.reverseLOCK()
 
