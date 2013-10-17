@@ -45,6 +45,19 @@ class GTTMifareUL:
             y += 1
         print l0,l1
         return (l0,l1)
+    def writeToFile(self,name):
+        fp = open(name,'w')
+        for index in self.myindex:
+            fp.write(self.card.ToBinary(self.mem_data[index]))
+        fp.close()
+    def readFromFile(self,name):
+        try:
+            fp = open(name,'r')
+        except:
+            pass
+        lines = fp.readlines()
+        print 'contenuto: ' + self.card.ToHex(lines[0])
+        fp.close()
     def printMemData(self):
         for index in self.myindex:
             print index+' '+self.mem_data[index]
@@ -85,8 +98,9 @@ class GTTMifareUL:
 
 mygtt = GTTMifareUL()
 mygtt.printMemData()
-print mygtt.printBlock('LOCK',8)
+print mygtt.printBlock('OTP',8)
 #mygtt.analyzeData('DATA')
 print mygtt.mem_raw
-mygtt.reverseLOCK()
-
+#mygtt.reverseLOCK()
+#mygtt.writeToFile('prova.raw')
+#mygtt.readFromFile('prova.raw')
