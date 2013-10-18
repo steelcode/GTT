@@ -2,7 +2,7 @@ import time
 import rfidiot
 import os
 import copy
-
+import datetime
 
 class GTTMifareUL:
     mem_raw = []
@@ -123,6 +123,10 @@ class GTTMifareUL:
         print out
         if int(out[3]) == 1: print 'OTP is locked'
         if out[0] == '1': print 'OTP is freezed'
+    def bruteDate(self):
+        gttepoch='2005/01/01 00:00'
+        gttfromlinux = time.mktime((2005,01,01,00,00,00,00,00,00))
+        print hex(int(gttfromlinux))
         
 
 mygtt = GTTMifareUL()
@@ -130,6 +134,7 @@ mygtt.printMemData()
 print   mygtt.getBinaryBlock('LOCK',8)
 print 'ride rimanenti: ' + mygtt.countRide()
 mygtt.checkLOCK()
+mygtt.bruteDate()
 #mygtt.analyzeData('DATA')
 #print mygtt.mem_raw
 #mygtt.reverseLOCK()
