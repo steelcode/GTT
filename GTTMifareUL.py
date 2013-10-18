@@ -61,21 +61,24 @@ class GTTMifareUL:
     def printMemData(self):
         for index in self.myindex:
             print index+' '+self.mem_data[index]
-    def printBlock(self,blockname,mod):
+    def getBinaryBlock(self,blockname,mod):
         if blockname not in self.mem_struct.keys():
             print 'error'
             return None
         writed = 0
         out = ''
+        bitlist = []
         for x in range(0,len(self.mem_data[blockname]),2):
             for y in range(7,-1,-1):
                 if ((writed % mod) == 0 and writed>0):
-                    out += ' '
+                    bitlist.append(out)
+                    out = ''
                     writed = 0
                 out += '%s' % (int(self.mem_data[blockname][x:x+2],16) >> y & 1)
                 writed += 1
+        bitlist.append(out)
         #print out
-        return out
+        return bitlist
     def analyzeData(self,blockname):
         out = ''
         w = 0
@@ -93,23 +96,40 @@ class GTTMifareUL:
         #bin='11111111'
         #print '%02x' % int(bin,2)
         pass
-	def printBinaryBlock(self,blockname):
-		if blockname not in self.myindex:
-			return None
-		return \
-	self.card.ToBinaryString(self.card.ToBinary(self.mem_data[blockname]))
-	def countRide(self,data):
-		'''le corse rimanenti sono salvate nel ultimo byte del OTP '''
-	ridebyte = self.mem_data['OTP'][-2:]
-	bitstring = self.card.ToBinaryString(self.card.ToBinary(ridebyte))
-	print bitstring
-
-
+    '''
+    def printBinaryBlock(self,blockname):
+        if blockname not in self.myindex:
+            return None
+        return self.card.ToBinaryString(self.card.ToBinary(self.mem_data[blockname]))
+    '''
+    def countRide(self):
+        cont = 0
+        ridebyte = self.mem_data['OTP'][-2:]
+        bitstring = self.card.ToBinaryString(self.card.ToBinary(ridebyte))
+        for x in range(len(bitstring)):
+            print bitstring[x]
+            if bitstring[x]=='0':
+                cont += 1
+        return str(cont)
+    def checkLOCK(self):
+        locklist = self.getBinaryBlock('LOCK',8)
+        l0 = locklist[0]
+        l1 = locklist[1]
+        ltmp = l1 + l0
+        out = ''
+        "from MSB to LSB"
+        for y in range(len(ltmp)):
+            out = ltmp[y] + out
+        print out
+        if int(out[3]) == 1: print 'OTP is locked'
+        if out[0] == '1': print 'OTP is freezed'
+        
 
 mygtt = GTTMifareUL()
 mygtt.printMemData()
-print mygtt.printBlock('OTP',8)
-mygtt.countRide()
+print   mygtt.getBinaryBlock('LOCK',8)
+print 'ride rimanenti: ' + mygtt.countRide()
+mygtt.checkLOCK()
 #mygtt.analyzeData('DATA')
 #print mygtt.mem_raw
 #mygtt.reverseLOCK()
