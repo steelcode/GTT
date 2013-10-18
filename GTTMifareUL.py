@@ -124,10 +124,21 @@ class GTTMifareUL:
         if int(out[3]) == 1: print 'OTP is locked'
         if out[0] == '1': print 'OTP is freezed'
     def bruteDate(self):
+        "la data viene salvata in 3 byte il cui valore rappresenta i minuti trascorsi dalla gtt epoch 1104534000"
         gttepoch='2005/01/01 00:00'
+        "secondi dal linux epoch al gtt epoch"
         gttfromlinux = time.mktime((2005,01,01,00,00,00,00,00,00))
-        print hex(int(gttfromlinux))
+        print int(gttfromlinux)
+        '''
+        prendo 3 byte dal campo data e li converto in int
+        calcolo l'equivalente in secondi e lo aggiungo al gttfromlinux
+        stampo la data corrispondente
+
+        date = int(3byte,16)
+        gttfromlinux+date
+        '''
         
+
 
 mygtt = GTTMifareUL()
 mygtt.printMemData()
