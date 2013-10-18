@@ -93,14 +93,25 @@ class GTTMifareUL:
         #bin='11111111'
         #print '%02x' % int(bin,2)
         pass
+	def printBinaryBlock(self,blockname):
+		if blockname not in self.myindex:
+			return None
+		return \
+	self.card.ToBinaryString(self.card.ToBinary(self.mem_data[blockname]))
+	def countRide(self,data):
+		'''le corse rimanenti sono salvate nel ultimo byte del OTP '''
+	ridebyte = self.mem_data['OTP'][-2:]
+	bitstring = self.card.ToBinaryString(self.card.ToBinary(ridebyte))
+	print bitstring
 
 
 
 mygtt = GTTMifareUL()
 mygtt.printMemData()
 print mygtt.printBlock('OTP',8)
+mygtt.countRide()
 #mygtt.analyzeData('DATA')
-print mygtt.mem_raw
+#print mygtt.mem_raw
 #mygtt.reverseLOCK()
 #mygtt.writeToFile('prova.raw')
 #mygtt.readFromFile('prova.raw')
